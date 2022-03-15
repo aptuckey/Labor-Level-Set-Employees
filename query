@@ -1,0 +1,74 @@
+DECLARE @LaborLevelSet AS VARCHAR(100)
+SET @LaborLevelSet = 'All Labor Accounts' --Name of Labor Level Set
+---------------------------------------------
+--LL3
+CREATE TABLE #ll3(entrys VARCHAR(20))
+
+IF EXISTS(SELECT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 3)
+
+INSERT INTO #ll3 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 3
+ELSE
+INSERT INTO #ll3 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where LABORLEVELDEFID = 3
+
+---------------------------------------------
+--LL4
+CREATE TABLE #ll4(entrys VARCHAR(20))
+
+IF EXISTS(SELECT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 4)
+
+INSERT INTO #ll4 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 4
+ELSE
+INSERT INTO #ll4 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where LABORLEVELDEFID = 4
+---------------------------------------------
+--LL5
+CREATE TABLE #ll5(entrys VARCHAR(20))
+
+IF EXISTS(SELECT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 5)
+
+INSERT INTO #ll5 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where lab.SHORTNM = @LaborLevelSet AND LABORLEVELDEFID = 5
+ELSE
+INSERT INTO #ll5 SELECT DISTINCT lle.NAME from [dbo].[LLELABACCTSTMM] las 
+			inner Join LABORLEVELENTRY lle on lle.LABORLEVELENTRYID = las.LABORLEVELENTRYID
+			inner Join LABORACCTSET lab on lab.LABORACCTSETID = las.LABORACCTSETID 
+			where LABORLEVELDEFID = 5
+---------------------------------------------
+--QUERY 
+select per.PERSONNUM, 
+		per.FIRSTNM, 
+		per.LASTNM,
+		per.HOMELABORLEVELNAME3,
+		per.HOMELABORLEVELNAME4,
+		per.HOMELABORLEVELNAME5
+		from VP_PERSON per 
+		where per.EMPLOYMENTSTATUS = 'Active' 
+			and per.HOMELABORLEVELNAME3 IN (Select entrys FROM #ll3)
+			and per.HOMELABORLEVELNAME4 IN (Select entrys FROM #ll4)
+			and per.HOMELABORLEVELNAME5 IN (Select entrys FROM #ll5)
+      
+DROP TABLE #ll3
+DROP TABLE #ll4
+DROP TABLE #ll5
